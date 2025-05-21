@@ -417,8 +417,16 @@ for name, model in models.items():
     f1 = f1_score(y_test, y_pred, average='weighted')
     print(f"\nModelo: {name}")
     print(classification_report(y_test, y_pred))
+    cm = confusion_matrix(y_test, y_pred)
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='rocket', xticklabels=model.classes_, yticklabels=model.classes_)
+    plt.title(f'Matriz de Confusión - {name}')
+    plt.xlabel('Predicción')
+    plt.ylabel('Real')
+    plt.tight_layout()
+    plt.show()
     results.append({'Modelo': name, 'Precisión': acc, 'Precisión Ponderada': prec, 'Recall': rec, 'F1-Score': f1})
-
+    
 Modelo: Logistic Regression
                precision    recall  f1-score   support
 
@@ -431,6 +439,8 @@ entertainment       1.00      0.94      0.97        81
      accuracy                           0.96       445
     macro avg       0.97      0.96      0.96       445
  weighted avg       0.96      0.96      0.96       445
+
+![download](https://github.com/user-attachments/assets/7a81a917-19a2-47f2-b9f7-e91a3f64c2f6)
 
 
 Modelo: Naive Bayes
@@ -446,6 +456,8 @@ entertainment       1.00      0.91      0.95        81
     macro avg       0.96      0.96      0.96       445
  weighted avg       0.97      0.96      0.96       445
 
+![download](https://github.com/user-attachments/assets/14bda02d-844a-4d65-a78b-37d536e062fd)
+
 
 Modelo: Random Forest
                precision    recall  f1-score   support
@@ -460,7 +472,9 @@ entertainment       0.99      0.90      0.94        81
     macro avg       0.95      0.94      0.94       445
  weighted avg       0.94      0.94      0.94       445
 
+![download](https://github.com/user-attachments/assets/fb02b539-2b36-4740-be59-381d9e1af723)
 
+ 
 Modelo: SVM
                precision    recall  f1-score   support
 
@@ -474,7 +488,9 @@ entertainment       0.96      0.98      0.97        81
     macro avg       0.96      0.96      0.96       445
  weighted avg       0.96      0.96      0.96       445
 
+![download](https://github.com/user-attachments/assets/e95aba58-bf28-4a01-a03f-02392bfaac49)
 
+ 
 Modelo: MLP (Neural Net)
                precision    recall  f1-score   support
 
@@ -487,6 +503,10 @@ entertainment       0.97      0.96      0.97        81
      accuracy                           0.97       445
     macro avg       0.97      0.97      0.97       445
  weighted avg       0.97      0.97      0.97       445
+
+![download](https://github.com/user-attachments/assets/8197f523-1bc9-49b2-98bb-95d00fd685e0)
+
+
 
 🔍 Análisis individual por modelo, División de datos y entrenamiento:
 1. MLPClassifier (Red Neuronal Multicapa):
@@ -526,7 +546,82 @@ Tiende a sobreajustar datos con alta dimensionalidad como texto vectorizado.
 
 No captura relaciones semánticas bien con matrices dispersas como TF-IDF sin reducción de dimensionalidad.
 
-Selection deleted
+📊 Explicación de que es una matriz de confusión y resultados:
+
+Una matriz de confusión es una tabla que permite visualizar el desempeño de un modelo de clasificación, comparando las predicciones con los valores reales. En un problema de clasificación multiclase como este (con 5 categorías de noticias: business, entertainment, politics, sport, tech), la matriz tiene una forma de 5x5.
+
+Cada celda (i, j) representa la cantidad de observaciones cuya verdadera clase es i y fueron predichas como clase j.
+
+Diagonal principal (de arriba a la izquierda a abajo a la derecha): aciertos.
+
+Celdas fuera de la diagonal: errores.
+
+✅ Interpretación por modelo (según la matriz de confusión observada):
+
+MLP (Neural Net) – 🏆 Modelo ganador:
+
+Casi todas las predicciones cayeron sobre la diagonal, es decir, el modelo acertó casi todas las clases correctamente.
+
+Los errores fueron mínimos y dispersos, mostrando gran capacidad de generalización.
+
+F1-score: 0.9663, el más alto.
+
+Conclusión: Este modelo aprendió patrones complejos y logró alta precisión y balance entre clases. Es ideal para producción.
+
+Logistic Regression:
+
+También presenta alta exactitud, con una matriz de confusión muy limpia.
+
+Cometió algún error esporádico, por ejemplo, entre tech y business, o politics con entertainment, pero muy poco.
+
+Conclusión: Gran modelo lineal para clasificación textual con TF-IDF. Rápido, interpretable y confiable.
+
+Naive Bayes:
+
+Sorprendentemente competitivo.
+
+Tuvo errores similares a Logistic Regression, aunque un poco más dispersos.
+
+Es común que confunda clases que comparten vocabulario frecuente (por ejemplo, business y tech).
+
+Conclusión: Aunque hace supuestos simplistas (independencia entre palabras), su rapidez y buen desempeño lo hacen valioso.
+
+SVM:
+
+Rendimiento similar a Logistic Regression.
+
+Muy buena generalización.
+
+Sus errores fueron mínimos y parecidos a los anteriores.
+
+Conclusión: Gran capacidad para manejar datos de texto, especialmente con representación TF-IDF. Es sensible a los márgenes de separación entre clases.
+
+Random Forest:
+
+Tuvo más errores, especialmente confundiendo business con tech o politics, y algunos casos de sport con entertainment.
+
+La matriz muestra más densidad fuera de la diagonal.
+
+Conclusión: Al ser un modelo de conjunto sobre datos dispersos, sufre al no capturar bien la secuencia y contexto de las palabras, como lo hacen mejor los modelos lineales o neuronales.
+
+🧠 ¿Qué nos enseñan estas matrices?
+
+Las clases están bien definidas: la mayoría de los modelos lograron predicciones muy certeras.
+
+El preprocesamiento y TF-IDF fueron fundamentales: incluso modelos simples como Naive Bayes rindieron bien.
+
+MLP fue superior porque capta relaciones no lineales complejas, crucial en NLP.
+
+Los errores más comunes se dieron entre categorías conceptualmente cercanas, como:
+
+business ↔ tech
+
+entertainment ↔ sport
+
+politics ↔ business
+
+
+
 # --------------------------------------------
 # 8. Evaluación comparativa
 # --------------------------------------------
