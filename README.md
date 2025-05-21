@@ -548,6 +548,7 @@ display(styled_table)
 ![download](https://github.com/user-attachments/assets/2e95a734-0fb7-4cc4-918d-59844616f956)
 
 Comparativa Final de Modelos (Mejor ordenado por F1-Score)
+
 ![image](https://github.com/user-attachments/assets/2a236912-b9fc-4b1d-af5c-0f417b0c04a1)
 
 📊 Comparativa Final de Modelos:
